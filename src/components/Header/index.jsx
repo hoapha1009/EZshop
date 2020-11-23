@@ -5,7 +5,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import CodeIcon from '@material-ui/icons/Code';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 Header.propTypes = {};
 
@@ -34,16 +34,12 @@ function Header(props) {
                             EZ shop
                         </Link>
                     </Typography>
-                    <Typography variant="h6" className={classes.title}>
-                        <Link className={classes.link} to="/todos">
-                            Todo
-                        </Link>
-                    </Typography>
-                    <Typography variant="h6" className={classes.title}>
-                        <Link className={classes.link} to="/albums">
-                            Album
-                        </Link>
-                    </Typography>
+                    <NavLink className={classes.link} to="/todos">
+                        <Button color="inherit">TODO</Button>
+                    </NavLink>
+                    <NavLink className={classes.link} to="/albums">
+                        <Button color="inherit">Albums</Button>
+                    </NavLink>
                     <Button color="inherit">Register</Button>
                 </Toolbar>
             </AppBar>
