@@ -3,10 +3,12 @@ import TodoFeature from 'features/Todo';
 import AlbumFeature from 'features/Album';
 import { NavLink, Route, Switch } from 'react-router-dom';
 import NotFound from 'components/NotFound';
+import Header from 'components/Header';
 
 function App() {
     return (
         <div className="App">
+            <Header />
             <p>
                 <NavLink to="/todos" activeClassName="active-menu">
                     Todo
