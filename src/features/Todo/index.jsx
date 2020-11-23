@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import TodoList from './components/TodoList';
 
 TodoFeature.propTypes = {};
 
 function TodoFeature(props) {
+    const [fillteredStatus, setFillteredStatus] = useState('all');
     const [todoList, setTodoList] = useState(() => {
         const initTodoList = [
             {
@@ -32,9 +33,25 @@ function TodoFeature(props) {
         };
         setTodoList(newTodoList);
     };
+    // useEffect(() => {
+
+    // },[fillteredTodo, todoList])
+    const showAllClick = () => {
+        setFillteredStatus('all');
+    };
+    const showNewClick = () => {
+        setFillteredStatus('new');
+    };
+    const showCompletedClick = () => {
+        setFillteredStatus('completed');
+    };
+    const filteredTodoList = todoList.filter((todo) => fillteredStatus === todo.status || fillteredStatus === 'all');
     return (
         <div>
-            <TodoList todoList={todoList} onTodoClick={onTodoClick} />
+            <TodoList todoList={filteredTodoList} onTodoClick={onTodoClick} />
+            <button onClick={showAllClick}>Show all todo</button>
+            <button onClick={showNewClick}>Show new todo</button>
+            <button onClick={showCompletedClick}>Show completed todo</button>
         </div>
     );
 }
