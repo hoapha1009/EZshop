@@ -2,6 +2,7 @@ import './App.scss';
 import TodoFeature from 'features/Todo';
 import AlbumFeature from 'features/Album';
 import { NavLink, Route, Switch } from 'react-router-dom';
+import NotFound from 'components/NotFound';
 
 function App() {
     return (
@@ -16,9 +17,17 @@ function App() {
                     Album
                 </NavLink>
             </p>
+            <p>
+                <NavLink to="/" activeClassName="active-menu">
+                    Home
+                </NavLink>
+            </p>
             <Switch>
-                <Route path="/todos" component={TodoFeature} />
-                <Route path="/albums" component={AlbumFeature} />
+                <Route path="/" component={TodoFeature} exact />
+                <Route path="/todos" component={TodoFeature} exact />
+                <Route path="/albums" component={AlbumFeature} exact />
+
+                <Route component={NotFound} />
             </Switch>
         </div>
     );
