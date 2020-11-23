@@ -1,10 +1,15 @@
 import TodoList from 'features/Todo/components/TodoList';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
+import queryString from 'query-string';
 
 ListPage.propTypes = {};
 
 function ListPage(props) {
-    const [fillteredStatus, setFillteredStatus] = useState('all');
+    const match = useRouteMatch();
+    const history = useHistory();
+    const location = useLocation();
+
     const [todoList, setTodoList] = useState(() => {
         const initTodoList = [
             {
@@ -33,17 +38,46 @@ function ListPage(props) {
         };
         setTodoList(newTodoList);
     };
-    // useEffect(() => {
+    const [fillteredStatus, setFillteredStatus] = useState(() => {
+        //async filters to URL params
+        const params = queryString.parse(location.search);
+        return params.status || 'all';
+    });
 
-    // },[fillteredTodo, todoList])
+    //async state to URL
+    useEffect(() => {
+        const params = queryString.parse(location.search);
+        setFillteredStatus(params.status || 'all');
+    }, [location.search]);
     const showAllClick = () => {
-        setFillteredStatus('all');
+        // setFillteredStatus('all');
+        const queryParams = {
+            status: 'all',
+        };
+        history.push({
+            pathname: match.path,
+            search: queryString.stringify(queryParams),
+        });
     };
     const showNewClick = () => {
-        setFillteredStatus('new');
+        // setFillteredStatus('new');
+        const queryParams = {
+            status: 'new',
+        };
+        history.push({
+            pathname: match.path,
+            search: queryString.stringify(queryParams),
+        });
     };
     const showCompletedClick = () => {
-        setFillteredStatus('completed');
+        // setFillteredStatus('completed');
+        const queryParams = {
+            status: 'completed',
+        };
+        history.push({
+            pathname: match.path,
+            search: queryString.stringify(queryParams),
+        });
     };
     const filteredTodoList = todoList.filter((todo) => fillteredStatus === todo.status || fillteredStatus === 'all');
     return (
