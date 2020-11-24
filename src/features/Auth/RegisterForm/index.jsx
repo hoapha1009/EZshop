@@ -2,6 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { makeStyles } from '@material-ui/core/styles';
+import { Avatar, Button, Typography } from '@material-ui/core';
+import { LockOpenOutlined } from '@material-ui/icons';
+import InputField from './components/form-control/InputField';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 
 RegisterForm.propTypes = {
     onSubmit: PropTypes.func,
@@ -41,9 +46,23 @@ const useStyle = makeStyles((theme) => ({
 
 function RegisterForm(props) {
     const classes = useStyle();
-    const form = useForm({
-        defaultValues: {},
+    const schema = yup.object().shape({
+        fullName: yup.string().required(),
+        email: yup.string().required(),
+        password: yup.string().required(),
+        retypePassword: yup.string().required(),
     });
+    const { form } = useForm({
+        defaultValues: {
+            fullName: '',
+            email: '',
+            password: '',
+            retypePassword: '',
+        },
+        resolver: yupResolver(schema),
+    });
+    const { isSubmitting } = form.formState;
+    const handleSubmit = (values) => {};
     return (
         <div className={classes.root}>
             <Avatar className={classes.avatar}>
@@ -52,6 +71,24 @@ function RegisterForm(props) {
             <Typography className={classes.title} component="h3" variant="h5">
                 Create an account
             </Typography>
+            <form onSubmit={form.handleSubmit(handleSubmit)}>
+                <InputField name="fullName" label="Full Name:" form={form} />
+                <InputField name="email" label="Email:" form={form} />
+                <InputField name="password" label="Password:" form={form} />
+                <InputField name="retypePassword" label="Retype Password:" form={form} />
+
+                <Button
+                    disabled={isSubmitting}
+                    type="submit"
+                    className={classes.submit}
+                    variant="contained"
+                    fullWidth
+                    color="primary"
+                    size="large"
+                >
+                    Create an account
+                </Button>
+            </form>
         </div>
     );
 }
