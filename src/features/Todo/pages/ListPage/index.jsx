@@ -2,6 +2,8 @@ import TodoList from 'features/Todo/components/TodoList';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import queryString from 'query-string';
+import { useMemo } from 'react';
+import TodoForm from 'features/Todo/components/TodoForm';
 
 ListPage.propTypes = {};
 
@@ -79,10 +81,23 @@ function ListPage(props) {
             search: queryString.stringify(queryParams),
         });
     };
-    const filteredTodoList = todoList.filter((todo) => fillteredStatus === todo.status || fillteredStatus === 'all');
+    const filteredTodoList = useMemo(() => {
+        return todoList.filter((todo) => fillteredStatus === todo.status || fillteredStatus === 'all');
+    }, [todoList, fillteredStatus]);
+
+    const handleFormSubmit = (values) => {
+        const newTodo = {
+            id: todoList.length + 1,
+            title: values.title,
+            status: 'new',
+        };
+        const newTodoList = [...todoList, newTodo];
+        setTodoList(newTodoList);
+    };
     return (
         <div>
             <TodoList todoList={filteredTodoList} onTodoClick={onTodoClick} />
+            <TodoForm onSubmit={handleFormSubmit} />
             <button onClick={showAllClick}>Show all todo</button>
             <button onClick={showNewClick}>Show new todo</button>
             <button onClick={showCompletedClick}>Show completed todo</button>
