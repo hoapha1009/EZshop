@@ -4,6 +4,7 @@ import AlbumFeature from 'features/Album';
 import { NavLink, Route, Switch } from 'react-router-dom';
 import NotFound from 'components/NotFound';
 import Header from 'components/Header';
+import CounterFeature from 'features/Counter';
 
 function App() {
     return (
@@ -31,6 +32,7 @@ function App() {
 
                 <Route component={NotFound} />
             </Switch>
+            <CounterFeature />
         </div>
     );
 }
