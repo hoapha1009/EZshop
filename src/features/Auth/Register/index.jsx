@@ -16,10 +16,9 @@ function Register(props) {
     const handleFormSubmit = async (values) => {
         try {
             values.username = values.email;
-            console.log('Form submit: ', values);
             const action = register(values);
             const resultAction = await dispatch(action);
-            const user = unwrapResult(resultAction);
+            unwrapResult(resultAction);
 
             // Close dialog
             const { closeDialog } = props;
@@ -29,9 +28,7 @@ function Register(props) {
 
             // Show snackbar
             enqueueSnackbar('Register successfully!', { variant: 'success' });
-            console.log('New user: ', user);
         } catch (error) {
-            console.log(error);
             enqueueSnackbar(error.message, { variant: 'error' });
         }
     };
