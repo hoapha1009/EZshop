@@ -1,4 +1,4 @@
-import { Box, IconButton } from '@material-ui/core';
+import { Box, IconButton, Menu, MenuItem } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -6,13 +6,14 @@ import DialogContent from '@material-ui/core/DialogContent';
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import { Close } from '@material-ui/icons';
+import { AccountCircle, Close } from '@material-ui/icons';
 import CodeIcon from '@material-ui/icons/Code';
 import MODE from 'constants/mode-access';
 import Login from 'features/Auth/Login';
 import Register from 'features/Auth/Register';
+import { logout } from 'features/Auth/userSlice';
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, NavLink } from 'react-router-dom';
 
 Header.propTypes = {};
@@ -43,6 +44,7 @@ function Header(props) {
     const loggedInUser = useSelector((state) => state.user.current);
     const isLoggedInUser = !!loggedInUser.id;
     const [mode, setMode] = useState(MODE.LOGIN);
+    const dispatch = useDispatch();
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -50,6 +52,21 @@ function Header(props) {
 
     const handleClose = () => {
         setOpen(false);
+    };
+
+    const [anchorEl, setAnchorEl] = useState(null);
+
+    const handleOpenMenu = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleCloseMenu = () => {
+        setAnchorEl(null);
+    };
+
+    const handleLogOut = () => {
+        const action = logout();
+        dispatch(action);
     };
     return (
         <div className={classes.root}>
@@ -67,19 +84,16 @@ function Header(props) {
                     <NavLink className={classes.link} to="/albums">
                         <Button color="inherit">Albums</Button>
                     </NavLink>
-                    {/* {!!isLoggedInUser && (
+                    {!isLoggedInUser && (
                         <Button color="inherit" onClick={handleClickOpen}>
                             Login
                         </Button>
                     )}
                     {isLoggedInUser && (
-                        <Button color="inherit" onClick={handleClickOpen}>
-                            Login
-                        </Button>
-                    )} */}
-                    <Button color="inherit" onClick={handleClickOpen}>
-                        Login
-                    </Button>
+                        <IconButton color="inherit" onClick={handleOpenMenu}>
+                            <AccountCircle />
+                        </IconButton>
+                    )}
                 </Toolbar>
             </AppBar>
             <Dialog
@@ -117,6 +131,25 @@ function Header(props) {
                     <Close />
                 </IconButton>
             </Dialog>
+            <Menu
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                id="simple-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleCloseMenu}
+                getContentAnchorEl={null}
+            >
+                <MenuItem>My account</MenuItem>
+                <MenuItem onClick={handleLogOut}>Logout</MenuItem>
+            </Menu>
         </div>
     );
 }
