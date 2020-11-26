@@ -1,12 +1,13 @@
+import { IconButton } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import { Close } from '@material-ui/icons';
 import CodeIcon from '@material-ui/icons/Code';
 import Register from 'features/Auth/Register';
 import React from 'react';
@@ -17,6 +18,7 @@ Header.propTypes = {};
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
+        position: 'relative',
     },
     title: {
         flexGrow: 1,
@@ -24,6 +26,12 @@ const useStyles = makeStyles((theme) => ({
     link: {
         color: '#fff',
         textDecoration: 'none',
+    },
+    closeButton: {
+        zIndex: 1,
+        position: 'absolute',
+        top: theme.spacing(1),
+        right: theme.spacing(1),
     },
 }));
 
@@ -59,17 +67,21 @@ function Header(props) {
                     </Button>
                 </Toolbar>
             </AppBar>
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Dialog
+                disableBackdropClick
+                disableEscapeKeyDown
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="form-dialog-title"
+            >
                 <DialogContent>
                     <DialogContentText>
-                        <Register />
+                        <Register closeDiaglog={handleClose} />
                     </DialogContentText>
                 </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose} color="primary">
-                        Cancel
-                    </Button>
-                </DialogActions>
+                <IconButton onClick={handleClose} className={classes.closeButton}>
+                    <Close />
+                </IconButton>
             </Dialog>
         </div>
     );
