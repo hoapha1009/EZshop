@@ -2,11 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { makeStyles } from '@material-ui/core/styles';
-import { Avatar, Button, Typography } from '@material-ui/core';
+import { Avatar, Button, LinearProgress, Typography } from '@material-ui/core';
 import { LockOpenOutlined } from '@material-ui/icons';
-import InputField from './components/form-control/InputField';
+import InputField from 'components/form-control/InputField';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import PasswordField from 'components/form-control/PasswordField';
 
 RegisterForm.propTypes = {
     onSubmit: PropTypes.func,
@@ -44,15 +45,30 @@ const useStyle = makeStyles((theme) => ({
     },
 }));
 
-function RegisterForm(props) {
+function RegisterForm({ onSubmit }) {
     const classes = useStyle();
+    const regex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
     const schema = yup.object().shape({
-        fullName: yup.string().required(),
-        email: yup.string().required(),
-        password: yup.string().required(),
-        retypePassword: yup.string().required(),
+        fullName: yup
+            .string()
+            .required('Enter full name!')
+            .test('should has at least 2 words', 'Please enter at least 2 words!', (value) => {
+                return value.split(' ').length >= 2;
+            }),
+        email: yup.string().required('Enter email!').email('Please enter a valid email!'),
+        password: yup
+            .string()
+            .required('Please enter password!')
+            .matches(
+                regex,
+                'Password must contain at least 8 characters, one uppercase, one lowercase, one number and one special character!'
+            ),
+        retypePassword: yup
+            .string()
+            .required('Please confirm your password!')
+            .oneOf([yup.ref('password')], 'Passwords dont match!'),
     });
-    const { form } = useForm({
+    const form = useForm({
         defaultValues: {
             fullName: '',
             email: '',
@@ -62,20 +78,24 @@ function RegisterForm(props) {
         resolver: yupResolver(schema),
     });
     const { isSubmitting } = form.formState;
-    const handleSubmit = (values) => {};
+    const handleFormSubmit = async (values) => {
+        if (!onSubmit) return;
+        await onSubmit(values);
+    };
     return (
         <div className={classes.root}>
+            {isSubmitting && <LinearProgress className={classes.progress} />}
             <Avatar className={classes.avatar}>
                 <LockOpenOutlined />
             </Avatar>
             <Typography className={classes.title} component="h3" variant="h5">
                 Create an account
             </Typography>
-            <form onSubmit={form.handleSubmit(handleSubmit)}>
+            <form onSubmit={form.handleSubmit(handleFormSubmit)}>
                 <InputField name="fullName" label="Full Name:" form={form} />
                 <InputField name="email" label="Email:" form={form} />
-                <InputField name="password" label="Password:" form={form} />
-                <InputField name="retypePassword" label="Retype Password:" form={form} />
+                <PasswordField name="password" label="Password:" form={form} />
+                <PasswordField name="retypePassword" label="Retype Password:" form={form} />
 
                 <Button
                     disabled={isSubmitting}

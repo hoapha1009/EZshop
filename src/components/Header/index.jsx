@@ -11,12 +11,15 @@ import CodeIcon from '@material-ui/icons/Code';
 import Register from 'features/Auth/Register';
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import { IconButton } from '@material-ui/core';
+import { Close } from '@material-ui/icons';
 
 Header.propTypes = {};
 
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
+        position: 'relative',
     },
     title: {
         flexGrow: 1,
@@ -24,6 +27,12 @@ const useStyles = makeStyles((theme) => ({
     link: {
         color: '#fff',
         textDecoration: 'none',
+    },
+    closeButton: {
+        zIndex: 1,
+        position: 'absolute',
+        top: theme.spacing(1),
+        right: theme.spacing(1),
     },
 }));
 
@@ -59,10 +68,16 @@ function Header(props) {
                     </Button>
                 </Toolbar>
             </AppBar>
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <Dialog
+                disableBackdropClick
+                disableEscapeKeyDown
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="form-dialog-title"
+            >
                 <DialogContent>
                     <DialogContentText>
-                        <Register />
+                        <Register closeDiaglog={handleClose} />
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -70,6 +85,9 @@ function Header(props) {
                         Cancel
                     </Button>
                 </DialogActions>
+                <IconButton onClick={handleClose} className={classes.closeButton}>
+                    <Close />
+                </IconButton>
             </Dialog>
         </div>
     );
